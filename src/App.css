@@ -3,6 +3,8 @@
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+  font-size: 1.1 rem;
+  font-weight: bold;
 }
 
 .board {
@@ -15,13 +17,9 @@
 .card {
   height: 100px;
   width: 100px;
-  /* border: solid thin; */
   margin: 6px;
   padding: 3px;
-  font-size: 1.1 rem;
-  /* font-weight: 900; */
-  font-weight: bold;
-  border-radius: 10%;
+  border-radius: 10px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -29,7 +27,25 @@
   cursor: pointer;
 }
 
-.highlighted {
+.selected {
   color: white;
   background-color: grey;
+}
+
+.button {
+  margin: 5px;
+  border: solid thin;
+  border-radius: 20px;
+}
+
+.found-card {
+  height: 100px;
+  width: 454px;
+  grid-column: 1 / span 4;
+  background-color: aqua;
+  justify-content: center;
+  align-items: center;
+  margin: 6px;
+  padding: 3px;
+  border-radius: 10px;
 }

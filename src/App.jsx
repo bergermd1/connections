@@ -1,15 +1,17 @@
 import { useState, useEffect } from 'react'
 import './App.css'
 import Card from './Card'
+import Button from './Button'
+import FoundCard from './FoundCard'
 
 function App() {
-  const [numSelected, setNumSelected] = useState(0)
-  const [items, setItems] = useState([]);
-
-  // let randomizedItems;
+  const [answers, setAnswers] = useState([]);
+  const [remainingItems, setRemainingItems] = useState([]);
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [foundAnswers, setFoundAnswers] = useState([]);
 
   useEffect(() => {
-    const answers = [
+    const fetchedAnswers = [
       {
         connection: 'Telling of events',
         items: [
@@ -47,38 +49,72 @@ function App() {
         ]
       },
     ]
-    const randomizedItems = randomize(answers.map(answer => answer.items).flat());
-    setItems(randomizedItems);
+
+    setAnswers(fetchedAnswers);
+    setRemainingItems(randomize(answers.map(answer => answer.items).flat()));
+
+    // const randomizedItems = randomize(answers.map(answer => answer.items).flat());
+    // setItems(randomizedItems);
+    // setConnections(answers.map(answer => answer.connection));
   }, [])
 
-  // console.log(randomizedItems);
-  
+
+  function shuffle() {
+    const randomizedItems = randomize(remainingItems);
+    setRemainingItems(randomizedItems);
+  }
+
+  function deselectItems() {
+    setSelectedItems([]);
+  }
+
+  function check() {
+    answers.forEach(answer => {
+      if (selectedItems.every(item => answer.items.includes(item))) {
+        // alert('yes!')
+        setFoundAnswers([...foundAnswers, ...answers.filter(mapAnswer => mapAnswer.connection === answer.connection)]);
+        setRemainingItems(remainingItems.filter(remainingItem => !selectedItems.includes(remainingItem)))
+        deselectItems();
+      }
+    })
+    // alert('no!')
+    // return false;
+  }
+
   return (
     <>
       <div>
         <div>Create four groups of four!</div>
-        <div>{numSelected} selected</div>
+        <div>{selectedItems.length} selected</div>
         <div className='board'>
-          {items.map(item => {
-              return <Card key={item} numSelected={numSelected} setNumSelected={setNumSelected} item={item}/>
+          {console.log(foundAnswers)}
+          {foundAnswers.map(answer => {
+            console.log(answer);
+            
+            return <FoundCard key={answer.connection} answer={answer}/>
+          })}
+          {remainingItems.map(item => {
+            return <Card key={item} selectedItems={selectedItems} setSelectedItems={setSelectedItems} item={item}/>
           })}
         </div>
+        <Button text={'Shuffle'} handleClick={shuffle}/>
+        <Button text={'Deselect All'} handleClick={deselectItems} disabled={selectedItems.length === 0}/>
+        <Button text={'Submit'} handleClick={check} disabled={selectedItems.length !== 4}/>
       </div>
     </>
   )
 }
 
+
+
 function randomize(items) {
     const randomizedIndices = [];
     const indices = items.map((item, i) => i);
-    // console.log(indices);
     
     while (indices.length > 0) {
       const index = Math.floor(Math.random() * indices.length);
       randomizedIndices.push(indices[index]);
       indices.splice(index, 1);
-      // console.log(indices);
-      
     }
 
     return randomizedIndices.map(index => items[index])

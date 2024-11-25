@@ -1,21 +1,28 @@
-import { useState } from 'react'
+// import { useState } from 'react'
 
-export default function Card({item, numSelected, setNumSelected}) {
-    const [highlighted, setHighlighted] = useState(false);
-
-    function handleClick() {
-        if (!highlighted) {
-            setNumSelected(numSelected + 1)
-        } else {
-            setNumSelected(numSelected - 1)
-        }
-
-        setHighlighted(!highlighted);
-    }
-
-    return (
-        <div className={`card ${highlighted && 'highlighted'}`} onClick={handleClick}>
+export default function Card({item, found = false, selectedItems = [], setSelectedItems = () => {}}) {
+    // const [highlighted, setHighlighted] = useState(false);
+    if (found) {
+        <div className={`card found`}>
             {item}
         </div>
-    )
+    } else {
+        const selected = selectedItems.includes(item);
+    
+        function handleClick() {
+            if (!selected && selectedItems.length < 4) {
+                setSelectedItems([...selectedItems, item])
+            } else {
+                setSelectedItems(selectedItems.filter(selectedItem => selectedItem !== item))
+            }
+    
+            // setHighlighted(!highlighted);
+        }
+    
+        return (
+            <div className={`card ${selected && 'selected'}`} onClick={handleClick}>
+                {item}
+            </div>
+        )
+    }
 }
