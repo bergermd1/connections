@@ -1,0 +1,35 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.board {
+  border: solid thin;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  padding: 3px;
+}
+
+.card {
+  height: 100px;
+  width: 100px;
+  /* border: solid thin; */
+  margin: 6px;
+  padding: 3px;
+  font-size: 1.1 rem;
+  /* font-weight: 900; */
+  font-weight: bold;
+  border-radius: 10%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(231, 230, 230);
+  cursor: pointer;
+}
+
+.highlighted {
+  color: white;
+  background-color: grey;
+}
