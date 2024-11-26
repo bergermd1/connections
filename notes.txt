@@ -1,0 +1,7 @@
+animations:
+    on wrong answer:
+        cards move up then down motion on wave left to right/up to down, followed by a shake and color to darker grey, then back to normal grey
+        mistake bubble turns grey, enlarges then shrinks to nothing while the cards are shaking
+
+    on last wrong answer:
+    

@@ -6,9 +6,8 @@ export default function FoundCard({answer}) {
     answerString = answerString.slice(0, answerString.length - 2);
     return (
         <div className="found-card">
-            {answer.connection}
-            <br />
-            {answerString}
+            <div>{answer.connection}</div>
+            <div>{answerString}</div>
         </div>
     )
 }

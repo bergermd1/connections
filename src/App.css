@@ -12,6 +12,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
   padding: 3px;
+  margin: 15px;
 }
 
 .card {
@@ -25,7 +26,11 @@
   align-items: center;
   background-color: rgb(231, 230, 230);
   cursor: pointer;
+
+  /* animation-name: test; */
 }
+
+
 
 .selected {
   color: white;
@@ -43,9 +48,51 @@
   width: 454px;
   grid-column: 1 / span 4;
   background-color: aqua;
+  display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   margin: 6px;
   padding: 3px;
   border-radius: 10px;
+}
+
+.mistakes-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin: 15px;
+}
+
+.mistake-bubbles-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  justify-content: center;
+  align-items: center;
+  margin-left: 10px;
+  width: 100px;
+}
+
+.mistake-bubble-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.mistake-bubble {
+  height: 15px;
+  width: 15px;
+  background-color: black;
+  border-radius: 100%;
+  margin: 0 5px 0 5px;
+  transition: all 1s;
+  padding: 0;
+}
+
+.mistake-bubble-disappear {
+  height: 0px;
+  width: 0px;
+  /* background-color: black;
+  border-radius: 100%;
+  margin: 0 5px 0 5px; */
 }

@@ -3,12 +3,14 @@ import './App.css'
 import Card from './Card'
 import Button from './Button'
 import FoundCard from './FoundCard'
+import MistakeBubble from './MistakeBubble'
 
 function App() {
   const [answers, setAnswers] = useState([]);
   const [remainingItems, setRemainingItems] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
   const [foundAnswers, setFoundAnswers] = useState([]);
+  const [mistakesRemaining, setMistakesRemaining] = useState(4);
 
   useEffect(() => {
     const fetchedAnswers = [
@@ -69,33 +71,50 @@ function App() {
   }
 
   function check() {
+    let correct = false;
     answers.forEach(answer => {
       if (selectedItems.every(item => answer.items.includes(item))) {
         // alert('yes!')
         setFoundAnswers([...foundAnswers, ...answers.filter(mapAnswer => mapAnswer.connection === answer.connection)]);
         setRemainingItems(remainingItems.filter(remainingItem => !selectedItems.includes(remainingItem)))
         deselectItems();
+        correct = true;
       }
     })
-    // alert('no!')
-    // return false;
+    if (!correct) {
+      const lastBubble = document.querySelector(`.mistake-bubbles-container div:nth-child(${mistakesRemaining}) > div`);
+      lastBubble.className = 'mistake-bubble mistake-bubble-disappear'
+      setMistakesRemaining(mistakesRemaining - 1);/////
+    }
+  }
+
+  function getMistakeBubbles() {
+    let bubbles = [];
+    for (let i = 0; i < 4; i++) {
+      bubbles.push(<MistakeBubble></MistakeBubble>)
+    }
+    return (
+      bubbles
+    )
   }
 
   return (
     <>
       <div>
         <div>Create four groups of four!</div>
-        <div>{selectedItems.length} selected</div>
+        {/* <div>{selectedItems.length} selected</div> */}
         <div className='board'>
           {console.log(foundAnswers)}
           {foundAnswers.map(answer => {
-            console.log(answer);
-            
             return <FoundCard key={answer.connection} answer={answer}/>
           })}
           {remainingItems.map(item => {
             return <Card key={item} selectedItems={selectedItems} setSelectedItems={setSelectedItems} item={item}/>
           })}
+        </div>
+        <div className='mistakes-container'>
+          <div>Mistakes Remaining:</div>
+          <div className='mistake-bubbles-container'>{getMistakeBubbles()}</div>
         </div>
         <Button text={'Shuffle'} handleClick={shuffle}/>
         <Button text={'Deselect All'} handleClick={deselectItems} disabled={selectedItems.length === 0}/>
