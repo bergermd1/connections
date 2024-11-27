@@ -26,8 +26,92 @@
   align-items: center;
   background-color: rgb(231, 230, 230);
   cursor: pointer;
+  position: relative;
+  /* bottom: 0; */
+  /* left: 15px; */
+  /* right: 15px; */
+}
 
-  /* animation-name: test; */
+.card-mistake-animation1 {
+  animation: card-mistake-animation1 .8s
+}
+
+@keyframes card-mistake-animation1 {
+  0% {
+    bottom: 0;
+    left: 0;
+  }
+  30% {
+    bottom: 5px;
+    left: 0;
+  }
+  60% {
+    bottom: 0;
+    left: 0;
+  }
+  /* 0% {
+    bottom: 0;
+    left: 0;
+  }
+  15% {
+    bottom: 5px;
+    left: 0;
+  }
+  30% {
+    bottom: 0;
+    left: 0;
+  }
+  37.5% {
+    bottom: 0;
+    left: -4px;
+  }
+  45% {
+    bottom: 0;
+    left: 4px;
+  }
+  52.5% {
+    bottom: 0;
+    left: -4px;
+  }
+  60% {
+    bottom: 0;
+    left: 4px;
+  }
+  70% {
+    bottom: 0;
+    left: 0;
+  } */
+}
+
+.card-mistake-animation2 {
+  animation: card-mistake-animation2 1s
+}
+
+@keyframes card-mistake-animation2 {
+  0% {
+    bottom: 0;
+    left: 0;
+  }
+  15% {
+    bottom: 0;
+    left: -4px;
+  }
+  30% {
+    bottom: 0;
+    left: 4px;
+  }
+  45% {
+    bottom: 0;
+    left: -4px;
+  }
+  60% {
+    bottom: 0;
+    left: 4px;
+  }
+  80% {
+    bottom: 0;
+    left: 0;
+  }
 }
 
 

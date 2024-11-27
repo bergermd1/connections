@@ -20,7 +20,7 @@ export default function Card({item, found = false, selectedItems = [], setSelect
         }
     
         return (
-            <div className={`card ${selected && 'selected'}`} onClick={handleClick}>
+            <div id={item.split(" ").join("")} className={`card ${selected && 'selected'}`} onClick={handleClick}>
                 {item}
             </div>
         )

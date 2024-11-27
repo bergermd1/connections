@@ -74,7 +74,6 @@ function App() {
     let correct = false;
     answers.forEach(answer => {
       if (selectedItems.every(item => answer.items.includes(item))) {
-        // alert('yes!')
         setFoundAnswers([...foundAnswers, ...answers.filter(mapAnswer => mapAnswer.connection === answer.connection)]);
         setRemainingItems(remainingItems.filter(remainingItem => !selectedItems.includes(remainingItem)))
         deselectItems();
@@ -83,8 +82,31 @@ function App() {
     })
     if (!correct) {
       const lastBubble = document.querySelector(`.mistake-bubbles-container div:nth-child(${mistakesRemaining}) > div`);
+      const wrongElements = selectedItems.map(item => {
+        const e = {
+          element: document.querySelector(`#${item.split(" ").join("")}`),
+          index: remainingItems.indexOf(item),
+        }
+        return e;
+      });
+      wrongElements.sort((a,b) => a.index - b.index)
+      
+      wrongElements.forEach((wrongElement, i) => {
+        setTimeout(() => {
+          wrongElement.element.className = 'card selected card-mistake-animation1'
+        }, 100 * i);
+        setTimeout(() => {
+          wrongElement.element.className = 'card selected'
+          wrongElement.element.className = 'card selected card-mistake-animation2'
+          setTimeout(() => {
+            wrongElement.element.className = 'card selected'
+          }, 1000);
+        }, 800);
+        /////disable board/buttons
+      })
+      
       lastBubble.className = 'mistake-bubble mistake-bubble-disappear'
-      setMistakesRemaining(mistakesRemaining - 1);/////
+      setMistakesRemaining(mistakesRemaining - 1);
     }
   }
 
@@ -104,7 +126,6 @@ function App() {
         <div>Create four groups of four!</div>
         {/* <div>{selectedItems.length} selected</div> */}
         <div className='board'>
-          {console.log(foundAnswers)}
           {foundAnswers.map(answer => {
             return <FoundCard key={answer.connection} answer={answer}/>
           })}
