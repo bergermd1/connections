@@ -122,15 +122,18 @@ function App() {
         const cardsToSwitch = selectedItems.filter(item => {
           const e = document.querySelector(`#${item.split(" ").join("")}`);
           const row = window.getComputedStyle(e).getPropertyValue('grid-row');
-          return (parseInt(row) !== 1)
+          return (parseInt(row) !== 1 + foundAnswers.length)
         })
 
-        const gridSlots = cardsToSwitch.map(card => {
-          const e = document.querySelector(`#${card.split(" ").join("")}`);
-          const row = window.getComputedStyle(e).getPropertyValue('grid-row');
-          const col = window.getComputedStyle(e).getPropertyValue('grid-column');
-          return [row, col];
-        })
+        console.log(cardsToSwitch);
+        
+
+        // const gridSlots = cardsToSwitch.map(card => {
+        //   const e = document.querySelector(`#${card.split(" ").join("")}`);
+        //   const row = window.getComputedStyle(e).getPropertyValue('grid-row');
+        //   const col = window.getComputedStyle(e).getPropertyValue('grid-column');
+        //   return [row, col];
+        // })
 
         // console.log(gridSlots);
         
@@ -138,10 +141,12 @@ function App() {
         const cardsInPlace = selectedItems.filter(item => {
           const e = document.querySelector(`#${item.split(" ").join("")}`);
           const row = window.getComputedStyle(e).getPropertyValue('grid-row');
-          return (parseInt(row) === 1)
+          return (parseInt(row) === 1 + foundAnswers.length)
         })
 
         const switchedCards = [];
+        console.log(remainingItems);
+        
 
         for (let i = 0; i < 4; i++) {
           // console.log("Cards in place: ", cardsInPlace);
@@ -169,6 +174,12 @@ function App() {
           remainingItems.forEach(item => {
             document.querySelector(`#${item.split(" ").join("")}`).style.transition = 'none';
             document.querySelector(`#${item.split(" ").join("")}`).style.transform = 'translate(0, 0)';
+            document.querySelector(`#${item.split(" ").join("")}`).style.transition = 'transform 2s ease';
+
+            // setTimeout(() => {
+            //   element1.style.transition = 'transform 2s ease';
+            //   element2.style.transition = 'transform 2s ease';
+            // }, 50)
           })
           remainingItems.sort((a,b) => {
             const aRow = window.getComputedStyle(document.querySelector(`#${a.split(" ").join("")}`)).getPropertyValue('grid-row');
@@ -243,6 +254,24 @@ function App() {
       c4.click();
     }, 200);
   }
+  function select4More() {
+    const c1 = document.querySelector('#Resin');
+    const c2 = document.querySelector('#Gum');
+    const c3 = document.querySelector('#Latex');
+    const c4 = document.querySelector('#Sap');
+    setTimeout(() => {
+      c1.click();
+    }, 50);
+    setTimeout(() => {
+      c2.click();
+    }, 100);
+    setTimeout(() => {
+      c3.click();
+    }, 150);
+    setTimeout(() => {
+      c4.click();
+    }, 200);
+  }
 
   return (
     <>
@@ -266,6 +295,7 @@ function App() {
         <Button text={'Swap'} handleClick={() => swapElements(document.querySelector(`#${selectedItems[0]}`), document.querySelector(`#${selectedItems[1]}`))}/>
         <br />
         <Button text={'Select 4 good ones'} handleClick={select4}/>
+        <Button text={'Select 4 more'} handleClick={select4More}/>
       </div>
     </>
   )
