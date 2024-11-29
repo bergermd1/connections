@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./App.css">
+    <title>Document</title>
+</head>
+<body>
+    <div class='test'>
+        <div class='test1'>1</div>
+        <div class='test2'>2</div>
+        <div class='test3'>3</div>
+        <div class='test4'>4</div>
+    </div>
+</body>
+<script>
+
+const test1 = document.querySelector('.test1')
+const test2 = document.querySelector('.test2')
+const test3 = document.querySelector('.test3')
+const test4 = document.querySelector('.test4')
+
+swapElements(test1, test2);
+setTimeout(() => {
+  swapElements(test1, test4);
+}, 3000);
+
+function swapElements(element1, element2) {
+  // Get their grid positions
+  const rect1 = element1.getBoundingClientRect();
+  const rect2 = element2.getBoundingClientRect();
+
+  // Calculate the difference between their positions
+  const deltaX = rect2.left - rect1.left;
+  const deltaY = rect2.top - rect1.top;
+
+  // Apply the transform to animate the movement
+  element1.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+  element2.style.transform = `translate(${-deltaX}px, ${-deltaY}px)`;
+
+  // Trigger a reflow (for animation)
+  element1.offsetHeight; // force reflow
+  element2.offsetHeight; // force reflow
+
+  // After the transition, switch the grid positions (visually swap)
+  setTimeout(() => {
+    element1.style.transition = 'none';
+    element2.style.transition = 'none';
+    
+    // Swap the grid positions directly
+    const tempClass = element1.className;
+    element1.className = element2.className;
+    element2.className = tempClass;
+
+    // Reset the transforms
+    element1.style.transform = 'translate(0, 0)';
+    element2.style.transform = 'translate(0, 0)';
+    const tempColor = getComputedStyle(element1).backgroundColor;
+    console.log('yeah');
+    console.log(getComputedStyle(element1).backgroundColor);
+    console.log('yeah');
+    
+    element1.style.backgroundColor = getComputedStyle(element2).backgroundColor;
+    element2.style.backgroundColor = tempColor;
+    // element1.style.backgroundColor = 'rgb(104, 104, 235)';
+    // element2.style.backgroundColor = 'antiquewhite';
+
+    console.log(element1);
+    
+    // Re-enable transition for the next operation
+    setTimeout(() => {
+      element1.style.transition = 'transform 0.5s ease';
+      element2.style.transition = 'transform 0.5s ease';
+    }, 50); // Small delay to re-enable transition
+  }, 2000); // Match the duration of the transition
+}
+//     setTimeout(() => {
+//     const test1 = document.querySelector('.test1')
+//     const test2 = document.querySelector('.test2')
+//     const slot1 = test1.className;
+//     const slot2 = test2.className;
+//     test1.className = slot2;
+//     test2.className = slot1;
+//     // console.log(slot1);
+//     // console.log(slot2);
+    
+//   }, 2000);
+</script>
+</html>
