@@ -5,3 +5,4 @@ animations:
 
     on last wrong answer:
     
+    add keys

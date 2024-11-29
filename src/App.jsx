@@ -83,20 +83,17 @@ function App() {
       element2.style.transition = 'none';
       
       // Swap the grid positions directly
-      const tempClass = element1.className;
-      element1.className = element2.className;
-      element2.className = tempClass;
+      // const tempClass = element1.className;
+      // element1.className = element2.className;
+      // element2.className = tempClass;
 
-      const tempText = element1.innerText;
-      element1.innerText = element2.innerText;
-      element2.innerText = tempText;
+      // const tempText = element1.innerText;
+      // element1.innerText = element2.innerText;
+      // element2.innerText = tempText;
 
-      // console.log(element1.gridArea);
-      
-  
       // Reset the transforms
-      element1.style.transform = 'translate(0, 0)';
-      element2.style.transform = 'translate(0, 0)';
+      // element1.style.transform = 'translate(0, 0)';
+      // element2.style.transform = 'translate(0, 0)';
       
       // Re-enable transition for the next operation
       setTimeout(() => {
@@ -119,17 +116,72 @@ function App() {
     let correct = false;
     answers.forEach(answer => {
       if (selectedItems.every(item => answer.items.includes(item))) {
-        // const correctElements = selectedItems.map(item => {
-        //   const e = {
-        //     element: document.querySelector(`#${item.split(" ").join("")}`),
-        //     index: remainingItems.indexOf(item),
-        //   }
-        //   return e;
-        // });
-        // correctElements.sort((a,b) => a.index - b.index)
-        setFoundAnswers([...foundAnswers, ...answers.filter(mapAnswer => mapAnswer.connection === answer.connection)]);
-        setRemainingItems(remainingItems.filter(remainingItem => !selectedItems.includes(remainingItem)))
-        deselectItems();
+        // const e = document.querySelector(`#${selectedItems[0].split(" ").join("")}`);
+        // console.log(window.getComputedStyle(e).getPropertyValue('grid-row'));
+        
+        const cardsToSwitch = selectedItems.filter(item => {
+          const e = document.querySelector(`#${item.split(" ").join("")}`);
+          const row = window.getComputedStyle(e).getPropertyValue('grid-row');
+          return (parseInt(row) !== 1)
+        })
+
+        const gridSlots = cardsToSwitch.map(card => {
+          const e = document.querySelector(`#${card.split(" ").join("")}`);
+          const row = window.getComputedStyle(e).getPropertyValue('grid-row');
+          const col = window.getComputedStyle(e).getPropertyValue('grid-column');
+          return [row, col];
+        })
+
+        // console.log(gridSlots);
+        
+
+        const cardsInPlace = selectedItems.filter(item => {
+          const e = document.querySelector(`#${item.split(" ").join("")}`);
+          const row = window.getComputedStyle(e).getPropertyValue('grid-row');
+          return (parseInt(row) === 1)
+        })
+
+        const switchedCards = [];
+
+        for (let i = 0; i < 4; i++) {
+          // console.log("Cards in place: ", cardsInPlace);
+          // console.log("Top item considered: ", remainingItems[i]);
+          // console.log("Card to switch: ", cardsToSwitch[i]);
+          
+          if (!cardsInPlace.includes(remainingItems[i])) {
+            swapElements(document.querySelector(`#${remainingItems[i].split(" ").join("")}`), document.querySelector(`#${cardsToSwitch[0].split(" ").join("")}`));
+            switchedCards.push([document.querySelector(`#${remainingItems[i].split(" ").join("")}`), [
+              window.getComputedStyle(document.querySelector(`#${cardsToSwitch[0].split(" ").join("")}`)).getPropertyValue('grid-row'),
+              window.getComputedStyle(document.querySelector(`#${cardsToSwitch[0].split(" ").join("")}`)).getPropertyValue('grid-column')
+            ]])
+            cardsToSwitch.shift();
+          }
+        }
+        console.log(switchedCards);
+
+        
+
+        setTimeout(() => {
+          switchedCards.forEach(card => {
+            card[0].style.gridArea = `${card[1][0]} / ${card[1][1]}`
+          })
+
+          remainingItems.forEach(item => {
+            document.querySelector(`#${item.split(" ").join("")}`).style.transition = 'none';
+            document.querySelector(`#${item.split(" ").join("")}`).style.transform = 'translate(0, 0)';
+          })
+          remainingItems.sort((a,b) => {
+            const aRow = window.getComputedStyle(document.querySelector(`#${a.split(" ").join("")}`)).getPropertyValue('grid-row');
+            const aCol = window.getComputedStyle(document.querySelector(`#${a.split(" ").join("")}`)).getPropertyValue('grid-column');
+            const bRow = window.getComputedStyle(document.querySelector(`#${b.split(" ").join("")}`)).getPropertyValue('grid-row');
+            const bCol = window.getComputedStyle(document.querySelector(`#${b.split(" ").join("")}`)).getPropertyValue('grid-column');
+            return ((10*aRow) + aCol - ((10*bRow) + bCol));
+          })
+          setFoundAnswers([...foundAnswers, ...answers.filter(mapAnswer => mapAnswer.connection === answer.connection)]);
+          setRemainingItems(remainingItems.filter(remainingItem => !selectedItems.includes(remainingItem)))
+          deselectItems();
+        }, 3000);
+
         correct = true;
       }
     })
@@ -173,6 +225,25 @@ function App() {
     )
   }
 
+  function select4() {
+    const c1 = document.querySelector('#Account');
+    const c2 = document.querySelector('#Story');
+    const c3 = document.querySelector('#Chronicle');
+    const c4 = document.querySelector('#Description');
+    setTimeout(() => {
+      c1.click();
+    }, 50);
+    setTimeout(() => {
+      c2.click();
+    }, 100);
+    setTimeout(() => {
+      c3.click();
+    }, 150);
+    setTimeout(() => {
+      c4.click();
+    }, 200);
+  }
+
   return (
     <>
       <div>
@@ -182,7 +253,7 @@ function App() {
             return <FoundCard key={answer.connection} answer={answer}/>
           })}
           {remainingItems.map((item, i) => {
-            return <Card key={item} index={i} selectedItems={selectedItems} setSelectedItems={setSelectedItems} item={item}/>
+            return <Card key={item} foundAnswers={foundAnswers.length} index={i} selectedItems={selectedItems} setSelectedItems={setSelectedItems} item={item}/>
           })}
         </div>
         <div className='mistakes-container'>
@@ -193,6 +264,8 @@ function App() {
         <Button text={'Deselect All'} handleClick={deselectItems} disabled={selectedItems.length === 0}/>
         <Button text={'Submit'} handleClick={check} disabled={selectedItems.length !== 4}/>
         <Button text={'Swap'} handleClick={() => swapElements(document.querySelector(`#${selectedItems[0]}`), document.querySelector(`#${selectedItems[1]}`))}/>
+        <br />
+        <Button text={'Select 4 good ones'} handleClick={select4}/>
       </div>
     </>
   )
