@@ -1,3 +1,4 @@
+import React from 'react';
 // import { useState } from 'react'
 
 export default function Card({item, foundAnswers, index, found = false, selectedItems = [], setSelectedItems = () => {}}) {

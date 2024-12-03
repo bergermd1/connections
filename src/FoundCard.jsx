@@ -1,6 +1,8 @@
+import React from 'react';
+
 export default function FoundCard({answer}) {
     let answerString = '';
-    answer.items.forEach(item => {
+    answer.answers.forEach(item => {
         answerString += (item + ', ');
     })
     answerString = answerString.slice(0, answerString.length - 2);

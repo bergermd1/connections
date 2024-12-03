@@ -1,9 +1,10 @@
+import React from 'react';
 import { useState, useEffect } from 'react'
 import './App.css'
-import Card from './Card'
-import Button from './Button'
-import FoundCard from './FoundCard'
-import MistakeBubble from './MistakeBubble'
+import Card from './Card.jsx'
+import Button from './Button.jsx'
+import FoundCard from './FoundCard.jsx'
+import MistakeBubble from './MistakeBubble.jsx'
 
 function App() {
   const [answers, setAnswers] = useState([]);
@@ -13,47 +14,59 @@ function App() {
   const [mistakesRemaining, setMistakesRemaining] = useState(4);
 
   useEffect(() => {
-    const fetchedAnswers = [
-      {
-        connection: 'Telling of events',
-        items: [
-          'Account',
-          'Chronicle',
-          'Description',
-          'Story',
-        ]
-      },
-      {
-        connection: 'Black or Red',
-        items: [
-          'Balance Sheet',
-          'Checkers',
-          'Licorice',
-          'Roulette',
-        ]
-      },
-      {
-        connection: 'Secreted by trees',
-        items: [
-          'Gum',
-          'Latex',
-          'Resin',
-          'Sap',
-        ]
-      },
-      {
-        connection: 'Things on sticks',
-        items: [
-          'Ball-in-cup',
-          'Corn dog',
-          'Cotton swab',
-          'Lollipop',
-        ]
-      },
-    ]
+    // const fetchedAnswers = [
+    //   {
+    //     connection: 'Telling of events',
+    //     items: [
+    //       'Account',
+    //       'Chronicle',
+    //       'Description',
+    //       'Story',
+    //     ]
+    //   },
+    //   {
+    //     connection: 'Black or Red',
+    //     items: [
+    //       'Balance Sheet',
+    //       'Checkers',
+    //       'Licorice',
+    //       'Roulette',
+    //     ]
+    //   },
+    //   {
+    //     connection: 'Secreted by trees',
+    //     items: [
+    //       'Gum',
+    //       'Latex',
+    //       'Resin',
+    //       'Sap',
+    //     ]
+    //   },
+    //   {
+    //     connection: 'Things on sticks',
+    //     items: [
+    //       'Ball-in-cup',
+    //       'Corn dog',
+    //       'Cotton swab',
+    //       'Lollipop',
+    //     ]
+    //   },
+    // ];
 
-    setAnswers(fetchedAnswers);
-    setRemainingItems(randomize(answers.map(answer => answer.items).flat()));
+    console.log('called');
+    
+
+    async function fetchData() {
+      const keyPromise = await fetch(`http://localhost:3000/data`);
+      const key = await keyPromise.json()
+
+      setAnswers(key);
+      setRemainingItems(randomize(key.map(item => item.answers).flat()));
+      console.log(key);
+      
+    }
+    
+    fetchData();
 
     // const randomizedItems = randomize(answers.map(answer => answer.items).flat());
     // setItems(randomizedItems);
@@ -115,7 +128,9 @@ function App() {
   function check() {
     let correct = false;
     answers.forEach(answer => {
-      if (selectedItems.every(item => answer.items.includes(item))) {
+      console.log(answer, " ", selectedItems);
+      
+      if (selectedItems.every(item => answer.answers.includes(item))) {
         const cardsToSwitch = selectedItems.filter(item => {
           const e = document.querySelector(`#${item.split(" ").join("")}`);
           const row = window.getComputedStyle(e).getPropertyValue('grid-row');
@@ -209,67 +224,70 @@ function App() {
   function getMistakeBubbles() {
     let bubbles = [];
     for (let i = 0; i < 4; i++) {
-      bubbles.push(<MistakeBubble></MistakeBubble>)
+      bubbles.push(<MistakeBubble key={i}></MistakeBubble>)
     }
     return (
       bubbles
     )
   }
 
-  function select4() {
-    const c1 = document.querySelector('#Account');
-    const c2 = document.querySelector('#Story');
-    const c3 = document.querySelector('#Chronicle');
-    const c4 = document.querySelector('#Description');
-    setTimeout(() => {
-      c1.click();
-    }, 50);
-    setTimeout(() => {
-      c2.click();
-    }, 100);
-    setTimeout(() => {
-      c3.click();
-    }, 150);
-    setTimeout(() => {
-      c4.click();
-    }, 200);
-  }
-  function select4More() {
-    const c1 = document.querySelector('#Resin');
-    const c2 = document.querySelector('#Gum');
-    const c3 = document.querySelector('#Latex');
-    const c4 = document.querySelector('#Sap');
-    setTimeout(() => {
-      c1.click();
-    }, 50);
-    setTimeout(() => {
-      c2.click();
-    }, 100);
-    setTimeout(() => {
-      c3.click();
-    }, 150);
-    setTimeout(() => {
-      c4.click();
-    }, 200);
-  }
-  function selectAnother4() {
-    const c1 = document.querySelector('#Ball-in-cup');
-    const c2 = document.querySelector('#Lollipop');
-    const c3 = document.querySelector('#Corndog');
-    const c4 = document.querySelector('#Cottonswab');
-    setTimeout(() => {
-      c1.click();
-    }, 50);
-    setTimeout(() => {
-      c2.click();
-    }, 100);
-    setTimeout(() => {
-      c3.click();
-    }, 150);
-    setTimeout(() => {
-      c4.click();
-    }, 200);
-  }
+  // function select4() {
+  //   const c1 = document.querySelector('#Account');
+  //   const c2 = document.querySelector('#Story');
+  //   const c3 = document.querySelector('#Chronicle');
+  //   const c4 = document.querySelector('#Description');
+  //   setTimeout(() => {
+  //     c1.click();
+  //   }, 50);
+  //   setTimeout(() => {
+  //     c2.click();
+  //   }, 100);
+  //   setTimeout(() => {
+  //     c3.click();
+  //   }, 150);
+  //   setTimeout(() => {
+  //     c4.click();
+  //   }, 200);
+  // }
+  // function select4More() {
+  //   const c1 = document.querySelector('#Resin');
+  //   const c2 = document.querySelector('#Gum');
+  //   const c3 = document.querySelector('#Latex');
+  //   const c4 = document.querySelector('#Sap');
+  //   setTimeout(() => {
+  //     c1.click();
+  //   }, 50);
+  //   setTimeout(() => {
+  //     c2.click();
+  //   }, 100);
+  //   setTimeout(() => {
+  //     c3.click();
+  //   }, 150);
+  //   setTimeout(() => {
+  //     c4.click();
+  //   }, 200);
+  // }
+  // function selectAnother4() {
+  //   const c1 = document.querySelector('#Ball-in-cup');
+  //   const c2 = document.querySelector('#Lollipop');
+  //   const c3 = document.querySelector('#Corndog');
+  //   const c4 = document.querySelector('#Cottonswab');
+  //   setTimeout(() => {
+  //     c1.click();
+  //   }, 50);
+  //   setTimeout(() => {
+  //     c2.click();
+  //   }, 100);
+  //   setTimeout(() => {
+  //     c3.click();
+  //   }, 150);
+  //   setTimeout(() => {
+  //     c4.click();
+  //   }, 200);
+  // }
+
+  console.log('xxx');
+  
 
   return (
     <>
@@ -291,10 +309,10 @@ function App() {
         <Button text={'Deselect All'} handleClick={deselectItems} disabled={selectedItems.length === 0}/>
         <Button text={'Submit'} handleClick={check} disabled={selectedItems.length !== 4}/>
         <Button text={'Swap'} handleClick={() => swapElements(document.querySelector(`#${selectedItems[0]}`), document.querySelector(`#${selectedItems[1]}`))}/>
-        <br />
-        <Button text={'Select 4 good ones'} handleClick={select4}/>
+        {/* <br /> */}
+        {/* <Button text={'Select 4 good ones'} handleClick={select4}/>
         <Button text={'Select 4 more'} handleClick={select4More}/>
-        <Button text={'Select another 4'} handleClick={selectAnother4}/>
+        <Button text={'Select another 4'} handleClick={selectAnother4}/> */}
       </div>
     </>
   )
