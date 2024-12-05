@@ -27,7 +27,7 @@ export default function Card({item, foundAnswers, index, found = false, selected
         
 
         return (
-            <div id={item.split(" ").join("")} className={`card ${selected && 'selected'}`} onClick={handleClick} style={{gridRow: row, gridColumn: column, transform: 'translate(0px, 0px)', transition: 'transform 2s'}}>
+            <div id={item.split(" ").join("")} className={`card ${selected && 'selected'}`} onClick={handleClick} style={{gridRow: row, gridColumn: column, transform: 'translate(0px, 0px)', transition: 'transform 750ms'}}>
                 {item}
             </div>
         )

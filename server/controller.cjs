@@ -8,6 +8,9 @@ exports.dataGet = async (req, res, next) => {
 
     const randomIndex = Math.floor(Math.random() * ids.length);
     const id = ids[randomIndex];
+    console.log(id);
+    //461, 487, 223
+    
     const key = await prisma.key.findMany({
         where: {
             puzzleId: id,

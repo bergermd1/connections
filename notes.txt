@@ -5,4 +5,11 @@ animations:
 
     on last wrong answer:
     
-    add keys
+shrink font if too big on cards
+fine-tune animation
+register/login
+click to reveal answers for testing
+stat tracking
+view stats
+
+flickering between swap/rerender on correct submission

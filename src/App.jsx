@@ -14,75 +14,25 @@ function App() {
   const [mistakesRemaining, setMistakesRemaining] = useState(4);
 
   useEffect(() => {
-    // const fetchedAnswers = [
-    //   {
-    //     connection: 'Telling of events',
-    //     items: [
-    //       'Account',
-    //       'Chronicle',
-    //       'Description',
-    //       'Story',
-    //     ]
-    //   },
-    //   {
-    //     connection: 'Black or Red',
-    //     items: [
-    //       'Balance Sheet',
-    //       'Checkers',
-    //       'Licorice',
-    //       'Roulette',
-    //     ]
-    //   },
-    //   {
-    //     connection: 'Secreted by trees',
-    //     items: [
-    //       'Gum',
-    //       'Latex',
-    //       'Resin',
-    //       'Sap',
-    //     ]
-    //   },
-    //   {
-    //     connection: 'Things on sticks',
-    //     items: [
-    //       'Ball-in-cup',
-    //       'Corn dog',
-    //       'Cotton swab',
-    //       'Lollipop',
-    //     ]
-    //   },
-    // ];
-
-    console.log('called');
-    
-
     async function fetchData() {
       const keyPromise = await fetch(`http://localhost:3000/data`);
       const key = await keyPromise.json()
 
       setAnswers(key);
       setRemainingItems(randomize(key.map(item => item.answers).flat()));
-      console.log(key);
-      
+      // console.log(key);
     }
     
     fetchData();
-
-    // const randomizedItems = randomize(answers.map(answer => answer.items).flat());
-    // setItems(randomizedItems);
-    // setConnections(answers.map(answer => answer.connection));
   }, [])
 
   function swapElements(element1, element2) {
-    // Get their grid positions
     const card1 = element1.getBoundingClientRect();
     const card2 = element2.getBoundingClientRect();
   
-    // Calculate the difference between their positions
     const dX = card2.left - card1.left;
     const dY = card2.top - card1.top;
   
-    // Apply the transform to animate the movement
     element1.style.transform = `translate(${dX}px, ${dY}px)`;
     element2.style.transform = `translate(${-dX}px, ${-dY}px)`;
   
@@ -94,24 +44,10 @@ function App() {
     setTimeout(() => {
       element1.style.transition = 'none';
       element2.style.transition = 'none';
-      
-      // Swap the grid positions directly
-      // const tempClass = element1.className;
-      // element1.className = element2.className;
-      // element2.className = tempClass;
 
-      // const tempText = element1.innerText;
-      // element1.innerText = element2.innerText;
-      // element2.innerText = tempText;
-
-      // Reset the transforms
-      // element1.style.transform = 'translate(0, 0)';
-      // element2.style.transform = 'translate(0, 0)';
-      
-      // Re-enable transition for the next operation
       setTimeout(() => {
-        element1.style.transition = 'transform 2s ease';
-        element2.style.transition = 'transform 2s ease';
+        element1.style.transition = 'transform 750ms ease';
+        element2.style.transition = 'transform 750ms ease';
       }, 50); // Small delay to re-enable transition
     }, 2000); // Match the duration of the transition
   }
@@ -128,15 +64,29 @@ function App() {
   function check() {
     let correct = false;
     answers.forEach(answer => {
-      console.log(answer, " ", selectedItems);
-      
+      // console.log(answer, " ", selectedItems);
       if (selectedItems.every(item => answer.answers.includes(item))) {
+
+        const correctElements = selectedItems.map(item => {
+          const e = {
+            element: document.querySelector(`#${item.split(" ").join("")}`),
+            index: remainingItems.indexOf(item),
+          }
+          return e;
+        });
+        correctElements.sort((a,b) => a.index - b.index)
+        
+        correctElements.forEach((wrongElement, i) => {
+          setTimeout(() => {
+            wrongElement.element.className = 'card selected card-submit-animation'
+          }, 100 * i);
+        });
+
         const cardsToSwitch = selectedItems.filter(item => {
           const e = document.querySelector(`#${item.split(" ").join("")}`);
           const row = window.getComputedStyle(e).getPropertyValue('grid-row');
           return (parseInt(row) !== 1 + foundAnswers.length)
         })
-        console.log(cardsToSwitch);
         const cardsInPlace = selectedItems.filter(item => {
           const e = document.querySelector(`#${item.split(" ").join("")}`);
           const row = window.getComputedStyle(e).getPropertyValue('grid-row');
@@ -144,36 +94,34 @@ function App() {
         })
 
         const switchedCards = [];
-        console.log(remainingItems);
-        
 
-        for (let i = 0; i < 4; i++) {
-          if (!cardsInPlace.includes(remainingItems[i])) {
-            swapElements(document.querySelector(`#${remainingItems[i].split(" ").join("")}`), document.querySelector(`#${cardsToSwitch[0].split(" ").join("")}`));
-            switchedCards.push([document.querySelector(`#${remainingItems[i].split(" ").join("")}`), [
-              window.getComputedStyle(document.querySelector(`#${cardsToSwitch[0].split(" ").join("")}`)).getPropertyValue('grid-row'),
-              window.getComputedStyle(document.querySelector(`#${cardsToSwitch[0].split(" ").join("")}`)).getPropertyValue('grid-column')
-            ]])
-            cardsToSwitch.shift();
+        setTimeout(() => {
+          for (let i = 0; i < 4; i++) {
+            if (!cardsInPlace.includes(remainingItems[i])) {
+              swapElements(document.querySelector(`#${remainingItems[i].split(" ").join("")}`), document.querySelector(`#${cardsToSwitch[0].split(" ").join("")}`));
+              switchedCards.push([document.querySelector(`#${remainingItems[i].split(" ").join("")}`), [
+                window.getComputedStyle(document.querySelector(`#${cardsToSwitch[0].split(" ").join("")}`)).getPropertyValue('grid-row'),
+                window.getComputedStyle(document.querySelector(`#${cardsToSwitch[0].split(" ").join("")}`)).getPropertyValue('grid-column')
+              ]])
+              cardsToSwitch.shift();
+            }
           }
-        }
-        console.log(switchedCards);
+        }, 1000);
 
-        
 
         setTimeout(() => {
           switchedCards.forEach(card => {
             card[0].style.gridArea = `${card[1][0]} / ${card[1][1]}`
+            // console.log(card[0].style.gridArea);
+            
           })
 
           remainingItems.forEach(item => {
-            // document.querySelector(`#${item.split(" ").join("")}`).style.opacity = .99;
             document.querySelector(`#${item.split(" ").join("")}`).style.transition = 'none';
+            document.querySelector(`#${item.split(" ").join("")}`).className = 'card false';
             document.querySelector(`#${item.split(" ").join("")}`).style.transform = 'translate(0, 0)';
-            // document.querySelector(`#${item.split(" ").join("")}`).style.transition = 'transform 2s ease';
-
             setTimeout(() => {
-              document.querySelector(`#${item.split(" ").join("")}`).style.transition = 'transform 2s ease'
+              document.querySelector(`#${item.split(" ").join("")}`).style.transition = 'transform 750ms ease'
             }, 0)
           })
           remainingItems.sort((a,b) => {
@@ -183,10 +131,10 @@ function App() {
             const bCol = window.getComputedStyle(document.querySelector(`#${b.split(" ").join("")}`)).getPropertyValue('grid-column');
             return ((10*aRow) + aCol - ((10*bRow) + bCol));
           })
+          deselectItems();
           setFoundAnswers([...foundAnswers, ...answers.filter(mapAnswer => mapAnswer.connection === answer.connection)]);
           setRemainingItems(remainingItems.filter(remainingItem => !selectedItems.includes(remainingItem)))
-          deselectItems();
-        }, 3000);
+        }, 2000);
 
         correct = true;
       }
@@ -204,11 +152,11 @@ function App() {
       
       wrongElements.forEach((wrongElement, i) => {
         setTimeout(() => {
-          wrongElement.element.className = 'card selected card-mistake-animation1'
+          wrongElement.element.className = 'card selected card-submit-animation'
         }, 100 * i);
         setTimeout(() => {
           wrongElement.element.className = 'card selected'
-          wrongElement.element.className = 'card selected card-mistake-animation2'
+          wrongElement.element.className = 'card selected card-mistake-animation'
           setTimeout(() => {
             wrongElement.element.className = 'card selected'
           }, 1000);
@@ -231,29 +179,29 @@ function App() {
     )
   }
 
-  // function select4() {
-  //   const c1 = document.querySelector('#Account');
-  //   const c2 = document.querySelector('#Story');
-  //   const c3 = document.querySelector('#Chronicle');
-  //   const c4 = document.querySelector('#Description');
-  //   setTimeout(() => {
-  //     c1.click();
-  //   }, 50);
-  //   setTimeout(() => {
-  //     c2.click();
-  //   }, 100);
-  //   setTimeout(() => {
-  //     c3.click();
-  //   }, 150);
-  //   setTimeout(() => {
-  //     c4.click();
-  //   }, 200);
-  // }
+  function select4(n) {
+    const c1 = document.querySelector(`#${answers[n].answers[0].split(" ").join("")}`);
+    const c2 = document.querySelector(`#${answers[n].answers[1].split(" ").join("")}`);
+    const c3 = document.querySelector(`#${answers[n].answers[2].split(" ").join("")}`);
+    const c4 = document.querySelector(`#${answers[n].answers[3].split(" ").join("")}`);
+    setTimeout(() => {
+      c1.click();
+    }, 50);
+    setTimeout(() => {
+      c2.click();
+    }, 100);
+    setTimeout(() => {
+      c3.click();
+    }, 150);
+    setTimeout(() => {
+      c4.click();
+    }, 200);
+  }
   // function select4More() {
-  //   const c1 = document.querySelector('#Resin');
-  //   const c2 = document.querySelector('#Gum');
-  //   const c3 = document.querySelector('#Latex');
-  //   const c4 = document.querySelector('#Sap');
+  //   const c1 = document.querySelector(`#${answers[1].answers[0].split(" ").join("")}`);
+  //   const c2 = document.querySelector(`#${answers[1].answers[1].split(" ").join("")}`);
+  //   const c3 = document.querySelector(`#${answers[1].answers[2].split(" ").join("")}`);
+  //   const c4 = document.querySelector(`#${answers[1].answers[3].split(" ").join("")}`);
   //   setTimeout(() => {
   //     c1.click();
   //   }, 50);
@@ -268,10 +216,28 @@ function App() {
   //   }, 200);
   // }
   // function selectAnother4() {
-  //   const c1 = document.querySelector('#Ball-in-cup');
-  //   const c2 = document.querySelector('#Lollipop');
-  //   const c3 = document.querySelector('#Corndog');
-  //   const c4 = document.querySelector('#Cottonswab');
+  //   const c1 = document.querySelector(`#${answers[2].answers[0].split(" ").join("")}`);
+  //   const c2 = document.querySelector(`#${answers[2].answers[1].split(" ").join("")}`);
+  //   const c3 = document.querySelector(`#${answers[2].answers[2].split(" ").join("")}`);
+  //   const c4 = document.querySelector(`#${answers[2].answers[3].split(" ").join("")}`);
+  //   setTimeout(() => {
+  //     c1.click();
+  //   }, 50);
+  //   setTimeout(() => {
+  //     c2.click();
+  //   }, 100);
+  //   setTimeout(() => {
+  //     c3.click();
+  //   }, 150);
+  //   setTimeout(() => {
+  //     c4.click();
+  //   }, 200);
+  // }
+  // function selectLast4() {
+  //   const c1 = document.querySelector(`#${answers[3].answers[0].split(" ").join("")}`);
+  //   const c2 = document.querySelector(`#${answers[3].answers[1].split(" ").join("")}`);
+  //   const c3 = document.querySelector(`#${answers[3].answers[2].split(" ").join("")}`);
+  //   const c4 = document.querySelector(`#${answers[3].answers[3].split(" ").join("")}`);
   //   setTimeout(() => {
   //     c1.click();
   //   }, 50);
@@ -286,16 +252,18 @@ function App() {
   //   }, 200);
   // }
 
-  console.log('xxx');
-  
-
   return (
     <>
       <div>
         <div>Create four groups of four!</div>
         <div className='board'>
-          {foundAnswers.map(answer => {
-            return <FoundCard key={answer.connection} answer={answer}/>
+          {foundAnswers.map((answer, i) => {
+            if (i !== foundAnswers.length - 1) {
+              console.log(answer);
+              return <FoundCard key={answer.connection} answer={answer}/>
+            } else {
+              return <FoundCard key={answer.connection} answer={answer} animation={true}/>
+            }
           })}
           {remainingItems.map((item, i) => {
             return <Card key={item} foundAnswers={foundAnswers.length} index={i} selectedItems={selectedItems} setSelectedItems={setSelectedItems} item={item}/>
@@ -308,11 +276,12 @@ function App() {
         <Button text={'Shuffle'} handleClick={shuffle}/>
         <Button text={'Deselect All'} handleClick={deselectItems} disabled={selectedItems.length === 0}/>
         <Button text={'Submit'} handleClick={check} disabled={selectedItems.length !== 4}/>
-        <Button text={'Swap'} handleClick={() => swapElements(document.querySelector(`#${selectedItems[0]}`), document.querySelector(`#${selectedItems[1]}`))}/>
-        {/* <br /> */}
-        {/* <Button text={'Select 4 good ones'} handleClick={select4}/>
-        <Button text={'Select 4 more'} handleClick={select4More}/>
-        <Button text={'Select another 4'} handleClick={selectAnother4}/> */}
+        <br />
+        <Button text={'Select 4 good ones'} handleClick={() => select4(0)}/>
+        <Button text={'Select 4 more'} handleClick={() => select4(1)}/>
+        <br />
+        <Button text={'Select another 4'} handleClick={() => select4(2)}/>
+        <Button text={'Select last 4'} handleClick={() => select4(3)}/>
       </div>
     </>
   )
