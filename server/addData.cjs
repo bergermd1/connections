@@ -1,12 +1,17 @@
 const prisma = require('./prisma.cjs');
 const fs = require('fs');
 
-// fs.readFile
+console.log(process.cwd());
+
 
 async function insertData() {
     let data;
     // await prisma.key.deleteMany();
-    fs.readFile('./data.json', 'utf8', (err, fileData) => {
+    // fs.readFile('')
+    fs.readFile('./server/data.json', 'utf8', (err, fileData) => {
+        // if (err) {
+        //     console.error(err);
+        // }
         data = fileData;
         data = JSON.parse(data);
         const row1 = Object.keys(data)[10];

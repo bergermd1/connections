@@ -7,6 +7,11 @@
   font-weight: bold;
 }
 
+.container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
 .board {
   border: solid thin;
   display: grid;

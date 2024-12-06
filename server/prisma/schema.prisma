@@ -15,22 +15,31 @@ datasource db {
 }
 
 model key {
-  id          Int           @id @default(autoincrement())
-  puzzleId    Int
-  connection  String
-  answers       String[]
+  id         Int      @id @default(autoincrement())
+  puzzleId   Int
+  connection String
+  answers    String[]
 }
 
 model user {
-  id          Int           @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
+  username    String   @unique
   hash        String
   salt        String
-  username    String        @unique
+  puzzlesDone puzzle[]
+}
+
+model puzzle {
+  puzzleId Int  @id   @unique
+  // key      key  @relation(fields: [puzzleId], references: [id])
+  userId   Int
+  solver   user @relation(fields: [userId], references: [id])
+  mistakes Int
 }
 
 model Session {
-  id          String   @id
-  sid         String   @unique
-  data        String
-  expiresAt   DateTime
+  id        String   @id
+  sid       String   @unique
+  data      String
+  expiresAt DateTime
 }

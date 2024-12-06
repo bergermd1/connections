@@ -5,6 +5,7 @@ import Card from './Card.jsx'
 import Button from './Button.jsx'
 import FoundCard from './FoundCard.jsx'
 import MistakeBubble from './MistakeBubble.jsx'
+// import router from '../server/router.cjs';
 
 function App() {
   const [answers, setAnswers] = useState([]);
@@ -252,36 +253,106 @@ function App() {
   //   }, 200);
   // }
 
+  async function loginSubmit(e) {
+    // console.log('yeah');
+    const formElemet = document.querySelector('#loginForm');
+    // formElemet.addEventListener('submit', (e) => {
+    e.preventDefault();
+    // console.log(e);
+    const formData = new FormData(formElemet);
+    const username = formData.get('username');
+    const password = formData.get('password');
+    const c = await fetch(`http://localhost:3000/login`, {
+      method: 'POST',
+      headers: {
+          'content-type': 'application/json',
+      },
+      body: JSON.stringify({username, password})
+    })
+    const d = await c.json();
+    console.log(d);
+  }
+  async function registerSubmit(e) {
+    // console.log('yeah');
+    const formElemet = document.querySelector('#registerForm');
+    // formElemet.addEventListener('submit', (e) => {
+      e.preventDefault();
+      // console.log(e);
+      const formData = new FormData(formElemet);
+      const username = formData.get('username');
+      const password = formData.get('password');
+      await fetch(`http://localhost:3000/register`, {
+        method: 'POST',
+        headers: {
+            'content-type': 'application/json',
+        },
+        body: JSON.stringify({username, password})
+    })
+  }
+
+
   return (
     <>
-      <div>
-        <div>Create four groups of four!</div>
-        <div className='board'>
-          {foundAnswers.map((answer, i) => {
-            if (i !== foundAnswers.length - 1) {
-              console.log(answer);
-              return <FoundCard key={answer.connection} answer={answer}/>
-            } else {
-              return <FoundCard key={answer.connection} answer={answer} animation={true}/>
-            }
-          })}
-          {remainingItems.map((item, i) => {
-            return <Card key={item} foundAnswers={foundAnswers.length} index={i} selectedItems={selectedItems} setSelectedItems={setSelectedItems} item={item}/>
-          })}
+      <div className='container'>
+        <div>
+          <div>
+            Log in to track stats:
+            <form id='loginForm' action="/login" method="post">
+              <label htmlFor="username">Username</label>
+              <input type="text" id='username' name='username'/>
+              <br />
+              <label htmlFor="password">Password</label>
+              <input type="text" id='password' name='password'/>
+              <br />
+              <button onClick={loginSubmit}>Submit</button>
+            </form>
+          </div>
+          <br />
+          <br />
+          <br />
+          <br />
+          <div>
+            Or register:
+            <form id='registerForm' action="/register" method='post'>
+              <label htmlFor="username">Username</label>
+              <input type="text" id='username' name='username'/>
+              <br />
+              <label htmlFor="password">Password</label>
+              <input type="text" id='password' name='password'/>
+              <br />
+              <button onClick={registerSubmit}>Submit</button>
+            </form>
+          </div>
         </div>
-        <div className='mistakes-container'>
-          <div>Mistakes Remaining:</div>
-          <div className='mistake-bubbles-container'>{getMistakeBubbles()}</div>
+        <div>
+          <div>Create four groups of four!</div>
+          <div className='board'>
+            {foundAnswers.map((answer, i) => {
+              if (i !== foundAnswers.length - 1) {
+                console.log(answer);
+                return <FoundCard key={answer.connection} answer={answer}/>
+              } else {
+                return <FoundCard key={answer.connection} answer={answer} animation={true}/>
+              }
+            })}
+            {remainingItems.map((item, i) => {
+              return <Card key={item} foundAnswers={foundAnswers.length} index={i} selectedItems={selectedItems} setSelectedItems={setSelectedItems} item={item}/>
+            })}
+          </div>
+          <div className='mistakes-container'>
+            <div>Mistakes Remaining:</div>
+            <div className='mistake-bubbles-container'>{getMistakeBubbles()}</div>
+          </div>
+          <Button text={'Shuffle'} handleClick={shuffle}/>
+          <Button text={'Deselect All'} handleClick={deselectItems} disabled={selectedItems.length === 0}/>
+          <Button text={'Submit'} handleClick={check} disabled={selectedItems.length !== 4}/>
+          <br />
+          <Button text={'Select 4 good ones'} handleClick={() => select4(0)}/>
+          <Button text={'Select 4 more'} handleClick={() => select4(1)}/>
+          <br />
+          <Button text={'Select another 4'} handleClick={() => select4(2)}/>
+          <Button text={'Select last 4'} handleClick={() => select4(3)}/>
         </div>
-        <Button text={'Shuffle'} handleClick={shuffle}/>
-        <Button text={'Deselect All'} handleClick={deselectItems} disabled={selectedItems.length === 0}/>
-        <Button text={'Submit'} handleClick={check} disabled={selectedItems.length !== 4}/>
-        <br />
-        <Button text={'Select 4 good ones'} handleClick={() => select4(0)}/>
-        <Button text={'Select 4 more'} handleClick={() => select4(1)}/>
-        <br />
-        <Button text={'Select another 4'} handleClick={() => select4(2)}/>
-        <Button text={'Select last 4'} handleClick={() => select4(3)}/>
       </div>
     </>
   )

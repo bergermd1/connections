@@ -1,15 +1,16 @@
 animations:
-    on wrong answer:
-        cards move up then down motion on wave left to right/up to down, followed by a shake and color to darker grey, then back to normal grey
-        mistake bubble turns grey, enlarges then shrinks to nothing while the cards are shaking
-
     on last wrong answer:
     
+
 shrink font if too big on cards
 fine-tune animation
 register/login
+    check for existing usernames
 click to reveal answers for testing
 stat tracking
 view stats
+different colors for foundCards
+
+
 
 flickering between swap/rerender on correct submission
