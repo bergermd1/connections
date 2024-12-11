@@ -1,16 +1,20 @@
 animations:
     on last wrong answer:
     
+on completion
+"perfect" at the top, fade to other page
+"solid" with 2 mistakes
 
 shrink font if too big on cards
-fine-tune animation
 register/login
     check for existing usernames
 click to reveal answers for testing
+different colors for foundCards
+don't return a puzzle already completed by user, or note when finished that it's already been done.
+on puzzle model, user + puzzleid should be unique
+
+
 stat tracking
 view stats
-different colors for foundCards
-
-
-
+fine-tune animation
 flickering between swap/rerender on correct submission
