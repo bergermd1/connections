@@ -196,11 +196,27 @@
   display: flex;
 }
 
-.left-container {
+.yLabel-container {
+  height: 400px;
+  width: 100px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  right: 20px;
+}
+/* rgb(249, 223, 109) */
+/* rgb(160, 195, 90) */
+/* rgb(176, 196, 239) */
+/* rgb(186, 129, 197) */
+
+.yAxis-container {
   height: 420px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  position: relative;
+  bottom: 8px;
+  right: 3px;
 }
 
 .chart-container {
@@ -224,7 +240,7 @@
   background-color: rgb(122, 121, 121)
 }
 
-.xlabel-container {
+.xAxis-container {
   display: flex;
   justify-content: space-around;
 }

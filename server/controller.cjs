@@ -1,5 +1,6 @@
 // import { connect } from './router.cjs';
-const fs = require('fs');
+// const fs = require('fs');
+const { body, validationResult } = require('express-validator');
 
 const prisma = require('./prisma.cjs');
 const genPassword = require('../server/lib/passwordUtils').genPassword
@@ -48,12 +49,32 @@ exports.logoutGet = (req, res) => {
 }
 
 exports.dataGet = async (req, res, next) => {
+    console.log(req.params);
+    let puzzleIdsDone;
+    if (req.params.userId) {
+        const userData = await prisma.user.findUnique({
+            where: {
+                id: parseInt(req.params.userId),
+            },
+            include: {
+                puzzlesDone: true,
+            }
+        })
+        puzzleIdsDone = userData.puzzlesDone.map(puzzle => puzzle.puzzleId);
+    } else {
+        puzzleIdsDone = [];
+    }
+    // console.log(puzzleIdsDone);
     
     const result = await prisma.$queryRaw`SELECT DISTINCT "puzzleId" FROM "key"`;
     const ids = result.map(item => item.puzzleId)
-
-    const randomIndex = Math.floor(Math.random() * ids.length);
-    const id = ids[randomIndex];
+    let id;
+    do {
+        const randomIndex = Math.floor(Math.random() * ids.length);
+        id = ids[randomIndex];
+        // console.log(id);
+    }
+    while (puzzleIdsDone.includes(id))
     //461, 487, 223
     
     const key = await prisma.key.findMany({

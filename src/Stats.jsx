@@ -36,16 +36,19 @@ function Stats() {
   }
   // console.log(maxMistakes);
 
-  const point1 = maxMistakes*4/4;
-  const point2 = maxMistakes*3/4;
-  const point3 = maxMistakes*2/4;
-  const point4 = maxMistakes*1/4;
+  const point1 = (maxMistakes + 4 - (maxMistakes % 4))*4/4;
+  const point2 = (maxMistakes + 4 - (maxMistakes % 4))*3/4;
+  const point3 = (maxMistakes + 4 - (maxMistakes % 4))*2/4;
+  const point4 = (maxMistakes + 4 - (maxMistakes % 4))*1/4;
 
   return (
     // <div>yeah</div>
     // <canvas id="myChart" style={{width:"100%",maxWidth:"700px"}}></canvas>
     <div className='graph-container'>
-      <div className='left-container'>
+      <div className='yLabel-container'>
+        Puzzles completed
+      </div>
+      <div className='yAxis-container'>
         <div>{point1}</div>
         <div>{point2}</div>
         <div>{point3}</div>
@@ -54,13 +57,13 @@ function Stats() {
       </div>
       <div className='right-container'>
         <div className='chart-container'>
-          <div className='bar' style={{ height: `${((400/maxMistakes) * data[0])}px` }}></div>
-          <div className='bar' style={{ height: `${((400/maxMistakes) * data[1])}px` }}></div>
-          <div className='bar' style={{ height: `${((400/maxMistakes) * data[2])}px` }}></div>
-          <div className='bar' style={{ height: `${((400/maxMistakes) * data[3])}px` }}></div>
-          <div className='bar' style={{ height: `${((400/maxMistakes) * data[4])}px` }}></div>
+          <div className='bar' style={{ height: `${((400/point1) * data[0])}px` }}></div>
+          <div className='bar' style={{ height: `${((400/point1) * data[1])}px` }}></div>
+          <div className='bar' style={{ height: `${((400/point1) * data[2])}px` }}></div>
+          <div className='bar' style={{ height: `${((400/point1) * data[3])}px` }}></div>
+          <div className='bar' style={{ height: `${((400/point1) * data[4])}px` }}></div>
         </div>
-        <div className='xlabel-container'>
+        <div className='xAxis-container'>
           <div className='bar-label'>0</div>
           <div className='bar-label'>1</div>
           <div className='bar-label'>2</div>

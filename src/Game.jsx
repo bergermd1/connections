@@ -18,6 +18,7 @@ function Game() {
   const [username, setUsername] = useState('');
   const [userId, setUserId] = useState('');
   const [puzzleId, setPuzzleId] = useState(0);
+  const [gameNumber, setGameNumber] = useState(0);
   const location = useLocation();
   const data = location.state;
   const navigate = useNavigate();
@@ -29,11 +30,12 @@ function Game() {
         setUserId(data.userId)
         setUsername(data.username);
     }
-    async function fetchData() {
-      const keyPromise = await fetch(`http://localhost:3000/data`);
+    async function fetchData(user = '') {
+      const keyPromise = await fetch(`http://localhost:3000/data/${user}`);
       const key = await keyPromise.json()
       // console.log(key);
-
+      setFoundAnswers([]);
+      setMistakesRemaining(4);
       setPuzzleId(key[0].puzzleId);
       setAnswers(key);
       setRemainingItems(randomize(key.map(item => item.answers).flat()));
@@ -42,10 +44,14 @@ function Game() {
     //   const validatePromise = await fetch(`http://localhost:3000/validate`);
     //   // console.log(validatePromise);
     // }
-    
-    fetchData();
+    if (data !== null) {
+      fetchData(data.userId)
+    } else {
+      fetchData();
+    }
+    deselectItems();
     // validate();
-  }, [])
+  }, [gameNumber])
 
   function swapElements(element1, element2) {
     const card1 = element1.getBoundingClientRect();
@@ -159,7 +165,7 @@ function Game() {
 
         if (foundAnswers.length === 3) {
           setTimeout(async () => {
-            await endGame();
+            await endGame(4 - mistakesRemaining);
           }, 3000);
         }
 
@@ -190,9 +196,15 @@ function Game() {
         }, 800);
         /////disable board/buttons
       })
-      
+
       lastBubble.className = 'mistake-bubble mistake-bubble-disappear'
       setMistakesRemaining(mistakesRemaining - 1);
+    
+      if (mistakesRemaining === 1) {
+        setTimeout(async () => {
+          await endGame(4);
+        }, 3000);
+      }
     }
   }
 
@@ -203,8 +215,7 @@ function Game() {
     navigate('/stats', {state: data});
   }
 
-  async function endGame() {
-    const mistakesMade = 4 - mistakesRemaining;
+  async function endGame(mistakesMade) {
     // const puzzleId = puzzleId
     console.log("mistakes made: ", mistakesMade, "; puzzleid: ", puzzleId, "; user: ", userId);
     if (userId !== "") {
@@ -216,13 +227,21 @@ function Game() {
         body: JSON.stringify({mistakesMade, puzzleId, userId})
       })
     }
-    alert("Well Done")
+    // alert("Well Done")
+
   }
 
-  function getMistakeBubbles() {
+  function newGame() {
+    // console.log('yeah');
+    
+    setGameNumber(gameNumber + 1);
+    // navigate(0, {state: data})
+  }
+
+  function getMistakeBubbles() {    
     let bubbles = [];
     for (let i = 0; i < 4; i++) {
-      bubbles.push(<MistakeBubble key={i}></MistakeBubble>)
+      bubbles.push(<MistakeBubble key={i+(4*gameNumber)}></MistakeBubble>)
     }
     return (
       bubbles
@@ -247,48 +266,6 @@ function Game() {
       c4.click();
     }, 200);
   }
-
-  // async function loginSubmit(e) {
-  //   // console.log('yeah');
-  //   const formElemet = document.querySelector('#loginForm');
-  //   // formElemet.addEventListener('submit', (e) => {
-  //   e.preventDefault();
-  //   // console.log(e);
-  //   const formData = new FormData(formElemet);
-  //   const username = formData.get('username');
-  //   const password = formData.get('password');
-  //   const login = await fetch(`http://localhost:3000/login`, {
-  //     method: 'POST',
-  //     headers: {
-  //         'content-type': 'application/json',
-  //     },
-  //     body: JSON.stringify({username, password})
-  //   })
-  //   const data = await login.json();
-  //   console.log(data);
-  //   if (data.loggedIn) {
-  //     setIsLoggedIn(true);
-  //     setUserId(data.userId)
-  //     setUsername(data.username);
-  //   }
-  // }
-  // async function registerSubmit(e) {
-  //   // console.log('yeah');
-  //   const formElemet = document.querySelector('#registerForm');
-  //   // formElemet.addEventListener('submit', (e) => {
-  //     e.preventDefault();
-  //     // console.log(e);
-  //     const formData = new FormData(formElemet);
-  //     const username = formData.get('username');
-  //     const password = formData.get('password');
-  //     await fetch(`http://localhost:3000/register`, {
-  //       method: 'POST',
-  //       headers: {
-  //           'content-type': 'application/json',
-  //       },
-  //       body: JSON.stringify({username, password})
-  //   })
-  // }
 
   async function logout() {
     await fetch(`http://localhost:3000/logout`);
@@ -324,7 +301,8 @@ function Game() {
           </div>
           <Button text={'Shuffle'} handleClick={shuffle}/>
           <Button text={'Deselect All'} handleClick={deselectItems} disabled={selectedItems.length === 0}/>
-          <Button text={'Submit'} handleClick={check} disabled={selectedItems.length !== 4}/>
+          <Button text={'Submit'} handleClick={check} disabled={selectedItems.length !== 4 || mistakesRemaining === 0}/>
+          <Button text={'New Game'} handleClick={newGame} disabled={foundAnswers.length !== 4 && mistakesRemaining !== 0}/>
           <br />
           <Button text={'Select 4 good ones'} handleClick={() => select4(0)}/>
           <Button text={'Select 4 more'} handleClick={() => select4(1)}/>

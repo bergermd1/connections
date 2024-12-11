@@ -3,6 +3,7 @@ const router = Router();
 const controller = require('./controller.cjs');
 
 router.get('/data', controller.dataGet);
+router.get('/data/:userId', controller.dataGet);
 router.get('/logout', controller.logoutGet)
 router.get('/loginfailure', controller.loginFailureGet)
 // router.get('/validate', controller.test)

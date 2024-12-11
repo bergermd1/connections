@@ -7,7 +7,10 @@ module.exports = {
     },
     devServer: {
         port: 3003,
-        static: path.resolve(__dirname, 'src')
+        static: path.resolve(__dirname, 'src'),
+        historyApiFallback: true,
+        open: true,
+        hot: true,
     },
     module: {
         rules: [
