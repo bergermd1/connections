@@ -88,6 +88,9 @@ exports.dataGet = async (req, res, next) => {
     }
     while (puzzleIdsDone.includes(id))
     //461, 487, 223
+    //79
+    //170
+    // console.log(id);
     
     const key = await prisma.key.findMany({
         where: {

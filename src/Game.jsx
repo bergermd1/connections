@@ -24,7 +24,6 @@ function Game() {
   const navigate = useNavigate();
   
   useEffect(() => {
-    // console.log(data);
     if (data !== null) {
         setIsLoggedIn(true);
         setUserId(data.userId)
@@ -33,17 +32,13 @@ function Game() {
     async function fetchData(user = '') {
       const keyPromise = await fetch(`http://localhost:3000/data/${user}`);
       const key = await keyPromise.json()
-      // console.log(key);
       setFoundAnswers([]);
       setMistakesRemaining(4);
       setPuzzleId(key[0].puzzleId);
       setAnswers(key);
       setRemainingItems(randomize(key.map(item => item.answers).flat()));
     }
-    // async function validate() {
-    //   const validatePromise = await fetch(`http://localhost:3000/validate`);
-    //   // console.log(validatePromise);
-    // }
+
     if (data !== null) {
       fetchData(data.userId)
     } else {
@@ -67,8 +62,11 @@ function Game() {
     element1.offsetHeight; // force reflow
     element2.offsetHeight; // force reflow
   
+    // element2.innerText = element1.innerText
+    
     // After the transition, switch the grid positions (visually swap)
     setTimeout(() => {
+      element2.innerText = element1.innerText
       element1.style.transition = 'none';
       element2.style.transition = 'none';
 
@@ -91,7 +89,6 @@ function Game() {
   function check() {
     let correct = false;
     answers.forEach(answer => {
-      // console.log(answer, " ", selectedItems);
       if (selectedItems.every(item => answer.answers.includes(item))) {
 
         const correctElements = selectedItems.map(item => {
@@ -109,15 +106,15 @@ function Game() {
           }, 100 * i);
         });
 
-        const cardsToSwitch = selectedItems.filter(item => {
-          const e = document.querySelector(`#${item.split(" ").join("")}`);
-          const row = window.getComputedStyle(e).getPropertyValue('grid-row');
-          return (parseInt(row) !== 1 + foundAnswers.length)
-        })
         const cardsInPlace = selectedItems.filter(item => {
           const e = document.querySelector(`#${item.split(" ").join("")}`);
           const row = window.getComputedStyle(e).getPropertyValue('grid-row');
           return (parseInt(row) === 1 + foundAnswers.length)
+        })
+        const cardsToSwitch = selectedItems.filter(item => {
+          const e = document.querySelector(`#${item.split(" ").join("")}`);
+          const row = window.getComputedStyle(e).getPropertyValue('grid-row');
+          return (parseInt(row) !== 1 + foundAnswers.length)
         })
 
         const switchedCards = [];
@@ -138,9 +135,11 @@ function Game() {
 
         setTimeout(() => {
           switchedCards.forEach(card => {
-            card[0].style.gridArea = `${card[1][0]} / ${card[1][1]}`
-            // console.log(card[0].style.gridArea);
+            // card[0].innerText = 'XXXXXX'
+            console.log(card[0].innerText);
             
+            console.log(card);
+            card[0].style.gridArea = `${card[1][0]} / ${card[1][1]}`
           })
 
           remainingItems.forEach(item => {
@@ -170,8 +169,6 @@ function Game() {
         }
 
         correct = true;
-        console.log(foundAnswers);
-        
       }
     })
     if (!correct) {
@@ -213,13 +210,11 @@ function Game() {
   async function getStats() {
     const dataResult = await fetch(`http://localhost:3000/stats/${userId}`);
     const data = await dataResult.json()
-    // console.log(data);
     navigate('/stats', {state: data});
   }
 
   async function endGame(mistakesMade) {
     // const puzzleId = puzzleId
-    console.log("mistakes made: ", mistakesMade, "; puzzleid: ", puzzleId, "; user: ", userId);
     if (userId !== "") {
       const login = await fetch(`http://localhost:3000/complete`, {
         method: 'POST',
@@ -234,10 +229,7 @@ function Game() {
   }
 
   function newGame() {
-    // console.log('yeah');
-    
     setGameNumber(gameNumber + 1);
-    // navigate(0, {state: data})
   }
 
   function getMistakeBubbles() {    
@@ -277,7 +269,7 @@ function Game() {
   return (
     <div className='container'>
       <div className='welcome-container'>
-        {isLoggedIn && `Welcome ${username}`}
+        {isLoggedIn && `Welcome ${username}!`}
         {isLoggedIn && 
             <Button text={"View my stats"} handleClick={getStats} />
           }
@@ -287,7 +279,6 @@ function Game() {
           <div className='board'>
           {foundAnswers.map((answer, i) => {
               if (i !== foundAnswers.length - 1) {
-              console.log(answer);
               return <FoundCard key={answer.connection} answer={answer} index={i} />
               } else {
               return <FoundCard key={answer.connection} answer={answer} index={i} animation={true} />

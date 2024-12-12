@@ -1,3 +1,3 @@
-shrink font if too big on cards
+check out /////s
 
 flickering between swap/rerender on correct submission

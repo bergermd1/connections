@@ -23,12 +23,6 @@ function Home() {
           body: JSON.stringify({username, password})
         })
         const data = await login.json();
-        console.log(data);
-        // if (data.loggedIn) {
-        //   setIsLoggedIn(true);
-        //   setUserId(data.userId)
-        //   setUsername(data.username);
-        // }
         if (data.loggedIn) {
             navigate('/game', {state: data});
         } else {
@@ -50,7 +44,6 @@ function Home() {
                 body: JSON.stringify({username, password})
             })
             const responseMessage = await registerResponse.json();
-            // console.log(cr);
             setRegisterMessage(responseMessage.message);
     }
 
