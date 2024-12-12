@@ -1,0 +1,23 @@
+.home-container {
+    display: flex;
+    flex-direction: column;
+    border: thin solid;
+    padding-top: 30px;
+}
+
+.submit-container {
+    display: flex;
+    /* width: 100%; */
+    /* margin: 10px; */
+    justify-content: space-around;
+}
+
+.submit-container > div {
+    margin: 50px;
+    /* display: flex; */
+}
+
+/* form {
+    display: flex;
+    flex-direction: column;
+} */

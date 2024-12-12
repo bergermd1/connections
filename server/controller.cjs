@@ -1,6 +1,6 @@
 // import { connect } from './router.cjs';
 // const fs = require('fs');
-const { body, validationResult } = require('express-validator');
+// const { body, validationResult } = require('express-validator');
 
 const prisma = require('./prisma.cjs');
 const genPassword = require('../server/lib/passwordUtils').genPassword
@@ -13,14 +13,26 @@ exports.registerPost = async (req, res) => {
     const salt = saltHash.salt;
     const hash = saltHash.hash;
 
-    const user = await prisma.user.create({
-        data: {
-            username,
-            hash,
-            salt,
-        },
-    })
-    console.log('user added');
+    let user = await prisma.user.findUnique({
+        where: {
+            username: req.body.username,
+        }
+    });
+    console.log(user);
+    if (user === null) {
+        user = await prisma.user.create({
+            data: {
+                username,
+                hash,
+                salt,
+            },
+        })
+        console.log('user added');
+        res.send({"message": 'User added'});
+    } else {
+        res.send({"message": 'Username already take'});
+    }
+
     
     // res.redirect('/');
 }
@@ -36,12 +48,12 @@ exports.loginPost = async (req, res) => {
 // }
 exports.validate = passport.authenticate(
     'local',
-    // {
-    //     failureRedirect: '/loginFailure',
-    // }
+    {
+        failureRedirect: '/loginFailure',
+    }
 )
 exports.loginFailureGet = (req, res) => {
-    res.send({"loggedIn": false});
+    res.send({"loggedIn": false, "message": "Wrong username/password"});
 }
 exports.logoutGet = (req, res) => {
     req.logout(() => {});

@@ -170,6 +170,8 @@ function Game() {
         }
 
         correct = true;
+        console.log(foundAnswers);
+        
       }
     })
     if (!correct) {
@@ -249,10 +251,10 @@ function Game() {
   }
 
   function select4(n) {
-    const c1 = document.querySelector(`#${answers[n].answers[0].split(" ").join("")}`);
-    const c2 = document.querySelector(`#${answers[n].answers[1].split(" ").join("")}`);
-    const c3 = document.querySelector(`#${answers[n].answers[2].split(" ").join("")}`);
-    const c4 = document.querySelector(`#${answers[n].answers[3].split(" ").join("")}`);
+    const c1 = document.querySelector(`#${answers[foundAnswers.length].answers[0].split(" ").join("")}`);
+    const c2 = document.querySelector(`#${answers[foundAnswers.length].answers[1].split(" ").join("")}`);
+    const c3 = document.querySelector(`#${answers[foundAnswers.length].answers[2].split(" ").join("")}`);
+    const c4 = document.querySelector(`#${answers[foundAnswers.length].answers[3].split(" ").join("")}`);
     setTimeout(() => {
       c1.click();
     }, 50);
@@ -274,11 +276,11 @@ function Game() {
 
   return (
     <div className='container'>
-      <div>
+      <div className='welcome-container'>
         {isLoggedIn && `Welcome ${username}`}
         {isLoggedIn && 
-          <Button text={"Stats"} handleClick={getStats} />
-        }
+            <Button text={"View my stats"} handleClick={getStats} />
+          }
       </div>
       <div>
           <div>Create four groups of four!</div>
@@ -286,9 +288,9 @@ function Game() {
           {foundAnswers.map((answer, i) => {
               if (i !== foundAnswers.length - 1) {
               console.log(answer);
-              return <FoundCard key={answer.connection} answer={answer}/>
+              return <FoundCard key={answer.connection} answer={answer} index={i} />
               } else {
-              return <FoundCard key={answer.connection} answer={answer} animation={true}/>
+              return <FoundCard key={answer.connection} answer={answer} index={i} animation={true} />
               }
           })}
           {remainingItems.map((item, i) => {
@@ -304,11 +306,14 @@ function Game() {
           <Button text={'Submit'} handleClick={check} disabled={selectedItems.length !== 4 || mistakesRemaining === 0}/>
           <Button text={'New Game'} handleClick={newGame} disabled={foundAnswers.length !== 4 && mistakesRemaining !== 0}/>
           <br />
-          <Button text={'Select 4 good ones'} handleClick={() => select4(0)}/>
-          <Button text={'Select 4 more'} handleClick={() => select4(1)}/>
           <br />
-          <Button text={'Select another 4'} handleClick={() => select4(2)}/>
-          <Button text={'Select last 4'} handleClick={() => select4(3)}/>
+          (For demonstration purposes)
+          <br />
+          <Button text={'Select 4 correct answers'} disabled={selectedItems.length !== 0} handleClick={() => select4(0)}/>
+          {/* <Button text={'Select 4 more'} handleClick={() => select4(1)}/> */}
+          {/* <br /> */}
+          {/* <Button text={'Select another 4'} handleClick={() => select4(2)}/> */}
+          {/* <Button text={'Select last 4'} handleClick={() => select4(3)}/> */}
       </div>
     </div>
   )

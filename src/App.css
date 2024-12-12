@@ -1,15 +1,27 @@
 #root {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
+  /* padding: 2rem; */
   text-align: center;
   font-size: 1.1 rem;
   font-weight: bold;
 }
 
+.error-message {
+  color: red;
+}
+
 .container {
   display: grid;
   grid-template-columns: 1fr;
+}
+
+.welcome-container {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-bottom: 5px;
+  margin: 5px 0 5px 0;
 }
 
 .board {
@@ -98,8 +110,9 @@
 }
 
 .button {
-  margin: 5px;
+  margin: 0 5px 0 5px;
   border: solid thin;
+  /* height: 40px; */
   border-radius: 20px;
 }
 
@@ -107,7 +120,7 @@
   height: 100px;
   width: 454px;
   grid-column: 1 / span 4;
-  background-color: aqua;
+  /* background-color: aqua; */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -115,6 +128,18 @@
   margin: 6px;
   padding: 3px;
   border-radius: 10px;
+}
+.found-card-color0 {
+  background-color: rgb(249, 223, 109);
+}
+.found-card-color1 {
+  background-color: rgb(160, 195, 90);  
+}
+.found-card-color2 {
+  background-color: rgb(176, 196, 239);
+}
+.found-card-color3 {
+  background-color: rgb(186, 129, 197);
 }
 
 .found-card-animation {
@@ -204,10 +229,6 @@
   position: relative;
   right: 20px;
 }
-/* rgb(249, 223, 109) */
-/* rgb(160, 195, 90) */
-/* rgb(176, 196, 239) */
-/* rgb(186, 129, 197) */
 
 .yAxis-container {
   height: 420px;
